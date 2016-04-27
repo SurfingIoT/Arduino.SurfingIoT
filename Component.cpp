@@ -34,7 +34,7 @@ char* Component::getValue() {
 }
 
 char* Component::getTypeName() {
-   static char* typeNames[] = {"DIGITAL", "ANALOG", "PWM", "RELAY", "LIGHT", "TEMPERATURE", "SERIAL", "PING", "ALL", "CUSTOM"};
+   char* typeNames[] = {"DIGITAL", "ANALOG", "PWM", "CUSTOM"};
   return typeNames[type];
 }
 
@@ -43,7 +43,7 @@ char* Component::write(char* c1) {
  //debug Serial.println("DEntro do write... ");
  //debug Serial.println(c1);
 
- if(type==DIGITAL || type==RELAY) {
+ if(type==DIGITAL) {
    state = atoi(c1);
    digitalWrite(port, state);
    return r;
@@ -53,10 +53,6 @@ char* Component::write(char* c1) {
    analogWrite(port, atoi(c1));
    return r;
  }
- else if(type==SERIAL) {
-   Serial.print(c1);
-   return r;
- }   
  else if(type==CUSTOM) {
    return myCustomFunction(c1); 
  }
@@ -69,7 +65,7 @@ void Component::emptyReadValue() {
 }
 char* Component::read() {
   emptyReadValue();
-  if(type==ANALOG || type==LIGHT || type==TEMP) {
+  if(type==ANALOG ) {
     //in my country we call this code as "gambiarra" #Gambiarrafeelings
     //mas na verdade o sensor de temperatura analógico causa no ADC do ARduino! 
     state = analogRead(port);
@@ -80,7 +76,7 @@ char* Component::read() {
     delay(5);
     return getValue();
   }
-  else if(type==DIGITAL || type==RELAY || type==PWM) {
+  else if(type==DIGITAL || type==PWM) {
     //pinMode(port, INPUT);
     state = digitalRead(port);
     pinMode(port,OUTPUT);
@@ -100,24 +96,6 @@ char* Component::read() {
     char* ccc="\0";
     return myCustomFunction(ccc);
 
-  } else if(type==PING) {
-    //Parallax ping based on digital pulseIn
-    pinMode(port, OUTPUT);
-    digitalWrite(port, LOW);
-    delayMicroseconds(2);
-    digitalWrite(port, HIGH);
-    delayMicroseconds(5);
-    digitalWrite(port, LOW);
-
-    pinMode(port, INPUT);
-    //long duration1 = pulseIn(port, HIGH);
-    //long cm1 =  duration1 / 29 /2;
-    //Serial.print("Duration: ");
-    //Serial.println(duration1);
-    //Serial.print("CM : ");
-    //Serial.println(cm1);
-    state = pulseIn(port, HIGH);
-    return getValue();
   } 
   else return "\0";
 }

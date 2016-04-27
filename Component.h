@@ -5,15 +5,7 @@
 #define ANALOG 	1
 #define PWM 	2
 
-#define RELAY   3
-#define LIGHT   4
-#define TEMP    5
-#define SERIAL 	6
-
-#define PING    7
-
-#define ALL     8
-#define CUSTOM  9
+#define CUSTOM  3
 class Component  {
  private:
    typedef char* (*customFunction)(char*);
